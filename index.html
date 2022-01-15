@@ -1,0 +1,221 @@
+<!doctype html>
+<html class="no-js haystack" lang="">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/index.css">
+    <meta name="theme-color" content="#ffffff">
+  </head>
+  <body class="bg-primary vh-100 d-flex flex-column">
+    <div class="container-xxl">
+      <div class="row">
+        <div class="col-12 text-start">
+          <h1 class="hs-logo mt-3 mb-3">HAYSTACK</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="home d-none">
+      <div class="container-xxl">
+        <div class="row">
+          <div class="col-12">
+            <div class="container-xxl card">
+              <div class="card-body text-center">
+                <button type="button" class="btn btn-primary my-5" id="create-room">create new game</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="join d-none">
+      <div class="container-xxl">
+        <div class="row">
+          <div class="col-12">
+            <div class="container-xxl card">
+              <div class="row card-body text-center">
+                <div class="col-12 col-sm-6 offset-sm-3">
+                  <form>
+                    <label for="player-name" class="form-label">Please enter your name</label>
+                    <input type="text" class="form-control" id="player-name">
+                    <button type="submit" class="btn btn-primary mt-3" id="join-room" disabled>proceed</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="room d-none">
+      <div class="container-xxl">
+        <div class="row">
+          <div class="col-lg-9 col-12 mb-lg-0 mb-4">
+
+            <!-- LOBBY -->
+            <div class="hs-state-lobby d-none">
+              <div class="card card-root">
+                <div class="card-header">Settings</div>
+                <div class="card-body">
+                  <div class="row">
+                    <!-- NUMBER OF ROUNDS -->
+                    <div class="col-12 col-sm-6">
+                      <label for="settings-rounds" class="col-form-label">Number of Rounds: <span class="settings-total-rounds"></span></label>
+                    </div>
+                    <div class="col-12 col-sm-6 d-flex">
+                      <input type="range" class="form-range admin-editable align-self-center" id="settings-rounds" min="1" max="20" value="4">
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer text-end">
+                  <div class="admin d-none">
+                    <button id="start-game" type="button" class="btn btn-primary hs-state-lobby d-none">Start Game</button>
+                  </div>
+                  <div class="non-admin d-none">
+                    <button type="button" class="btn btn-primary" disabled>Waiting for Admin</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ROUND PREPARE -->
+            <div class="hs-state-round-prepare d-none">
+              <div class="card card-root">
+                <div class="card-header d-none"></div>
+                <div class="card-body">
+                  <div class="admin d-none">
+                    <p class="fs-3 text-center mt-2 mb-2">Ready for round <span class="current-round-number"></span>?</p>
+                  </div>
+                  <div class="non-admin d-none">
+                    <p class="fs-3 text-center mt-2 mb-2">Get ready for round <span class="current-round-number"></span>!</p>
+                  </div>
+                </div>
+                <div class="card-footer text-end">
+                  <button id="start-round" type="button" class="btn btn-primary admin d-none">Start Round</button>
+                  <button type="button" class="btn btn-primary non-admin d-none" disabled>Waiting for Admin</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ROUND ACTIVE + ROUND COMPLETE -->
+            <div class="hs-state-round-active hs-state-round-complete d-none">
+              <div class="card card-root">
+                <div id="mapid" class="card-body"></div>
+
+                <!-- ROUND COMPLETE -->
+                <div class="hs-state-round-complete text-end d-none on-top-of-map mt-3 mb-3 me-3">
+                  <button id="show-scores" type="button" class="btn btn-primary admin d-none">Show Scores</button>
+                  <button type="button" class="btn btn-primary non-admin d-none" disabled>Waiting for Admin</button>
+                </div>
+
+                <div class="position-absolute start-50 translate-middle-x map-overlay-top-center">
+                  <div class="card">
+                    <div class="card-body hs-card-body-small">
+                      <div class="" id="map-current-target"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-flex flex-row position-absolute map-overlay-top-right">
+                  <div class="card-group">
+                    <div class="card">
+                      <div class="card-body hs-card-body-small text-center d-inline-flex justify-content-evenly">
+                        <div class="d-flex flex-wrap flex-column" id="map-round">
+                          <span class="fs-3 fw-light"><span class="current-round-number"></span>/<span class="settings-total-rounds"></span></span>
+                          <span class="text-uppercase fs-7 text-muted fw-bold">round</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-body hs-card-body-small text-center d-inline-flex justify-content-evenly">
+                        <div class="d-flex flex-wrap flex-column" id="map-clock">
+                          <span class="fs-3 fw-light"><span id="map-clock-seconds">&#8734;</span>s</span>
+                          <span class="text-uppercase fs-7 text-muted fw-bold">left</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SHOW SCORES -->
+            <div class="hs-state-show-scores d-none">
+              <div class="card card-root">
+                <div class="card-header">
+                  Scores after round <span class="current-round-number"></span>
+                </div>
+                <div class="card-body">
+                  <div class="col-12 col-sm-6 offset-sm-3 my-5 scores">
+                    <table class="table">
+                      <tbody>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="hs-state-show-scores text-end d-none on-top-of-map mt-3 mb-3 me-3">
+                  <button id="finish-round" type="button" class="btn btn-primary admin d-none">Finish Round</button>
+                  <button type="button" class="btn btn-primary non-admin d-none" disabled>Waiting for Admin</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- GAME ACTIVE (if game is running) -->
+            <div class="hs-state-game-active d-none">
+              <div class="card card-root">
+                <div class="card-body text-center">
+                  <div id="game-active" class="fs-3 mx-3 my-5 d-none">There is currently a game in progress. Please wait until it is completed.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SIDEBAR -->
+          <div class="col-lg-3 col-12">
+
+            <!-- GAME -->
+            <div class="card card-root mb-4">
+              <div class="card-header">Game</div>
+              <div class="card-body">
+                <dt>Link</dt>
+                <dd id="room-url"></dd>
+                <dt>Number of Rounds</dt>
+                <dd><span class="settings-total-rounds"></span></dd>
+                <div class="hs-state-round-prepare hs-state-round-active hs-state-round-complete hs-state-game-complete d-none">
+                  <button type="button" class="btn btn-primary admin d-none" id="cancel-game">cancel game</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- PLAYERS -->
+            <div class="card card-root mb-4">
+              <div class="card-header">Players</div>
+              <div class="card-body">
+                <ul id="room-members" class="list-unstyled mb-0"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-xxl d-flex flex-column flex-grow-1 justify-content-end">
+      <div class="row">
+        <div class="col-12 col-sm-6 offset-sm-6 col-md-4 offset-md-8 col-lg-3 offset-lg-9 align-self-end">
+          <div class="position-relative">
+            <div id="alerts" class="position-absolute end-0 bottom-0 w-100"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/vendor/modernizr-3.11.2.min.js"></script>
+    <script src="js/plugins.js"></script>
+    <script src="ts/index.ts"></script>
+  </body>
+</html>
