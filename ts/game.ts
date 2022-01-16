@@ -263,13 +263,20 @@ function renderScores() {
 
 export function gatherSettingsData() {
   let inputRounds = $('#settings-rounds').val();
+  let inputLocationSet = $('#settings-locationset').val() || "";
 
   if(inputRounds === undefined || inputRounds < 1 || inputRounds > 20) {
     inputRounds = 1;
   }
 
+  let availableSets = ['C_WW', 'C_EU', 'S_EU', 'S_DE']
+  if(availableSets.indexOf(inputLocationSet.toString()) < 0) {
+    inputLocationSet = 'C_WW'
+  }
+
   return {
-    rounds: inputRounds
+    rounds: inputRounds,
+    locationSet: inputLocationSet
   };
 }
 

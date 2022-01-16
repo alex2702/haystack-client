@@ -200,6 +200,7 @@ export function initRoom() {
     // alternatively, disable an input after changing it and only re-enable it after receiving the settings/updated msg
     $('.settings-total-rounds').text(message.settings.rounds);
     $('#settings-rounds').val(message.settings.rounds);
+    $('#settings-locationset').val(message.settings.locationSet);
   });
 
   gameState.room!.onMessage("round/prepared", (message) => {
